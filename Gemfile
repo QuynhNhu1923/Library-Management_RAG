@@ -110,3 +110,6 @@ gem "chartkick"
 gem "devise"
 gem "groupdate"
 gem "whenever", require: false
+
+gem "pdf-reader", "~> 2.15"
+gem "combine_pdf"

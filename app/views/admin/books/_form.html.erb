@@ -12,6 +12,27 @@
   </div>
 
   <div class="mb-3">
+    <%= f.label :pdf_file, "Tải lên bản PDF của sách", class: "form-label fw-bold" %>
+    
+    <%# Hiển thị thông tin file hiện tại nếu đã có %>
+    <% if book.pdf_file.attached? %>
+      <div class="alert alert-info d-flex align-items-center py-2 px-3 mb-2">
+        <i class="fas fa-file-pdf me-2 fs-4 text-danger"></i>
+        <div class="small">
+          <span class="d-block text-dark fw-bold">Tệp hiện tại: <%= book.pdf_file.filename %></span>
+          <span class="text-muted"><%= number_to_human_size(book.pdf_file.byte_size) %></span>
+        </div>
+        <a href="<%= url_for(book.pdf_file) %>" target="_blank" class="ms-auto btn btn-sm btn-link text-decoration-none">
+          <i class="fas fa-external-link-alt"></i> Xem thử
+        </a>
+      </div>
+    <% end %>
+
+    <%= f.file_field :pdf_file, accept: 'application/pdf', class: "form-control" %>
+    <div class="form-text text-muted italic">Chọn tệp mới nếu bạn muốn thay thế bản hiện tại.</div>
+  </div>
+
+  <div class="mb-3">
     <%= f.label :publication_year, t("admin.books.attributes.publication_year"), class: "form-label" %>
     <%= f.number_field :publication_year, class: "form-control" %>
   </div>
@@ -54,16 +75,17 @@
   </div>
 
   <div class="mb-3">
-    <%= f.label :image, t("admin.books.attributes.image"), class: "form-label" %>
-    <%= f.file_field :image, class: "form-control" %>
-  </div>
+    <%= f.label :image, t("admin.books.attributes.image"), class: "form-label fw-bold" %>
+    
+    <% if book.image.attached? %>
+      <div class="mb-2">
+        <%= image_tag book.image.variant(resize_to_limit: [100, 100]), class: "img-thumbnail mb-2 d-block shadow-sm" %>
+        <span class="badge bg-secondary">Ảnh hiện tại: <%= book.image.filename %></span>
+      </div>
+    <% end %>
 
-  <% if book.image.attached? %>
-    <div class="mb-3">
-      <p><strong><%= t("admin.books.attributes.current_image") %>:</strong></p>
-      <%= image_tag book.image.variant(resize_to_limit: [150, 150]), class: "img-thumbnail" %>
-    </div>
-  <% end %>
+    <%= f.file_field :image, class: "form-control", accept: 'image/*' %>
+  </div>
 
   <div class="d-flex gap-2">
     <%= f.submit submit_text, class: "btn btn-success btn-sm w-auto" %>

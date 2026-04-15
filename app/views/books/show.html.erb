@@ -68,6 +68,11 @@
     </div>
   </div>
 
+  <!-- PDF -->
+  <% if @book.pdf_file.attached? %>
+    <%= render "pdf_viewer", book: @book %>
+  <% end %>
+
   <!-- Author Info -->
   <div class="author-info-wrapper mb-5 ps-5 pe-5">
     <div class="author-border-line"></div>
@@ -138,3 +143,4 @@
     <% end %>
   </div>
 </div>
+<%# <script>window.onerror = function() { return true; };</script> %>

@@ -1,19 +1,19 @@
 # encoding: utf-8
 
-attach_image = ->(book) do
-  cover_path = Rails.root.join("lib", "assets", "book_covers", "book_#{book.id}.jpg")
+# attach_image = ->(book) do
+#   cover_path = Rails.root.join("lib", "assets", "book_covers", "book_#{book.id}.jpg")
 
-  if File.exist?(cover_path)
-    book.image.attach(
-      io: File.open(cover_path),
-      filename: "book_#{book.id}.jpg",
-      content_type: 'image/jpeg'
-    )
-    puts "✅ Đã thêm ảnh bìa cho sách #{book.id}: #{book.title}"
-  else
-    puts "⚠️  Chưa có ảnh bìa cho sách #{book.id}: #{book.title} (đường dẫn: #{cover_path})"
-  end
-end
+#   if File.exist?(cover_path)
+#     book.image.attach(
+#       io: File.open(cover_path),
+#       filename: "book_#{book.id}.jpg",
+#       content_type: 'image/jpeg'
+#     )
+#     puts "✅ Đã thêm ảnh bìa cho sách #{book.id}: #{book.title}"
+#   else
+#     puts "⚠️  Chưa có ảnh bìa cho sách #{book.id}: #{book.title} (đường dẫn: #{cover_path})"
+#   end
+# end
 
 puts "🌱 Đang tạo dữ liệu mẫu cho hệ thống thư viện..."
 
@@ -232,7 +232,7 @@ books = [
     available_quantity: 12
   },
   {
-    title: "Design Patterns",
+    title: "Design Patterns", # khong co
     description: "Các mẫu thiết kế trong lập trình hướng đối tượng",
     publication_year: 1994,
     author: Author.create!(name: "Gang of Four", nationality: "Mỹ"),

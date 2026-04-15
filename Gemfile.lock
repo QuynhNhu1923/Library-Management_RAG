@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (2.0.1)
     actioncable (7.0.7)
       actionpack (= 7.0.7)
       activesupport (= 7.0.7)
@@ -73,6 +74,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
+    afm (1.0.0)
     ast (2.4.2)
     autoprefixer-rails (10.4.21.0)
       execjs (~> 2)
@@ -98,6 +100,9 @@ GEM
       xpath (~> 3.2)
     chartkick (5.2.0)
     chronic (0.10.2)
+    combine_pdf (1.0.31)
+      matrix
+      ruby-rc4 (>= 0.1.5)
     concurrent-ruby (1.2.2)
     config (5.6.1)
       deep_merge (~> 1.2, >= 1.2.1)
@@ -142,6 +147,7 @@ GEM
       activesupport (>= 5.0)
     groupdate (6.5.1)
       activesupport (>= 7)
+    hashery (2.1.2)
     hashie (5.0.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
@@ -227,6 +233,12 @@ GEM
     parser (3.2.2.3)
       ast (~> 2.4.1)
       racc
+    pdf-reader (2.15.1)
+      Ascii85 (>= 1.0, < 3.0, != 2.0.0)
+      afm (>= 0.2.1, < 2)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pg (1.6.3-x86_64-linux)
     prism (1.4.0)
     public_suffix (5.0.3)
@@ -331,6 +343,7 @@ GEM
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
     ruby-progressbar (1.13.0)
+    ruby-rc4 (0.1.5)
     ruby-vips (2.2.4)
       ffi (~> 1.12)
       logger
@@ -372,6 +385,8 @@ GEM
     thor (1.2.2)
     tilt (2.6.1)
     timeout (0.4.0)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
     turbo-rails (1.4.0)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
@@ -413,6 +428,7 @@ DEPENDENCIES
   cancancan
   capybara
   chartkick
+  combine_pdf
   config
   debug
   devise
@@ -430,6 +446,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
   pagy (~> 6.0)
+  pdf-reader (~> 2.15)
   pg
   puma (~> 5.0)
   rails (~> 7.0.5)

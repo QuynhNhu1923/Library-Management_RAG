@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_08_28_025523) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_25_104539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "vector"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -58,6 +59,16 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_28_025523) do
     t.index ["book_id", "category_id"], name: "index_book_categories_on_book_id_and_category_id", unique: true
     t.index ["book_id"], name: "index_book_categories_on_book_id"
     t.index ["category_id"], name: "index_book_categories_on_category_id"
+  end
+
+  create_table "book_sections", force: :cascade do |t|
+    t.bigint "book_id", null: false
+    t.text "content"
+    t.json "metadata"
+    t.vector "embedding", limit: 1536
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["book_id"], name: "index_book_sections_on_book_id"
   end
 
   create_table "books", force: :cascade do |t|
@@ -181,6 +192,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_08_28_025523) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "book_categories", "books"
   add_foreign_key "book_categories", "categories"
+  add_foreign_key "book_sections", "books"
   add_foreign_key "books", "authors"
   add_foreign_key "books", "publishers"
   add_foreign_key "borrow_request_items", "books"

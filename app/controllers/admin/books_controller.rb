@@ -3,6 +3,7 @@ class Admin::BooksController < Admin::ApplicationController
   PERMITTED_BOOK_PARAMS = [
     :title,
     :description,
+    :pdf_file,
     :publication_year,
     :total_quantity,
     :available_quantity,
@@ -67,6 +68,18 @@ class Admin::BooksController < Admin::ApplicationController
     redirect_to admin_books_path
   end
 
+  def process_pdf
+    @book = Book.find(params[:id])
+    
+    if @book.pdf_file.attached?
+      # Tạm thời mình comment dòng gọi Service lại để Như test giao diện trước
+      # PdfProcessorService.new(@book).call
+      
+      redirect_to admin_book_path(@book), notice: "Nút bấm đã hoạt động! Sẵn sàng viết code xử lý PDF."
+    else
+      redirect_to admin_book_path(@book), alert: "Không tìm thấy file PDF."
+    end
+  end
   private
 
   def set_book

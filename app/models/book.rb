@@ -23,7 +23,10 @@ class Book < ApplicationRecord
     books.author_id
   SQL
 
+  has_many :book_sections, dependent: :destroy
   has_one_attached :image
+  has_one_attached :pdf_file # file goc
+  has_one_attached :preview_pdf #file xem thu
 
   belongs_to :author
   belongs_to :publisher
@@ -39,6 +42,10 @@ class Book < ApplicationRecord
             length: {
               maximum: MAX_TITLE_LENGTH
             }
+
+  validates :pdf_file, content_type: ['application/pdf'],
+                       size: { less_than: 50.megabytes, 
+                       message: 'phải nhỏ hơn 50MB' }
 
   validates :description,
             length: {

@@ -17,6 +17,11 @@ Rails.application.routes.draw do
           patch :change_status
         end
       end
+      resources :books do
+        member do
+          post :process_pdf
+        end
+      end
     end
 
     root "static_pages#home"
