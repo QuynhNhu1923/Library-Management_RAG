@@ -193,7 +193,13 @@ write_a_review destroy_review)
   end
 
   def set_recommended_books
-    books_by_author = Book.by_author(@book.author_id).exclude_book(@book.id)
+    # Preload image để tránh N+1 ActiveStorage
+    # Preload author vì bạn có thể hiển thị tên tác giả dưới mỗi đầu sách
+    books_by_author = Book.by_author(@book.author_id)
+                          .exclude_book(@book.id)
+                          .with_attached_image
+                          .includes(:author)
+
     @pagy_books, @recommended_books = pagy(
       books_by_author,
       items: Settings.digits.digit_6,

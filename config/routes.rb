@@ -23,7 +23,14 @@ Rails.application.routes.draw do
         end
       end
     end
-
+    
+    namespace :api_rag do
+      resources :rag_data, only: [] do
+        collection do
+          get :metadata
+        end
+      end
+    end
     root "static_pages#home"
 
     get "/home",    to: "static_pages#home",    as: :home
@@ -42,6 +49,8 @@ Rails.application.routes.draw do
 
     get "search", to: "books#search", as: :search_books
 
+    # post 'chatbot/ask', to: 'chatbot#ask'
+    post '/chatbot/query', to: 'chatbot#query'
     # resources :password_resets, only: [:new, :create, :edit, :update]
     resources :users, only: [:show, :edit, :update] do
       member do

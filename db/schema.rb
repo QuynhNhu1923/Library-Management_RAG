@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_25_104539) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_16_052939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "vector"
@@ -62,13 +62,14 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_25_104539) do
   end
 
   create_table "book_sections", force: :cascade do |t|
-    t.bigint "book_id", null: false
     t.text "content"
-    t.json "metadata"
-    t.vector "embedding", limit: 1536
+    t.jsonb "metadata"
+    t.vector "embedding", limit: 768
+    t.bigint "book_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["book_id"], name: "index_book_sections_on_book_id"
+    t.index ["embedding"], name: "index_book_sections_on_embedding", opclass: :vector_cosine_ops, using: :hnsw
   end
 
   create_table "books", force: :cascade do |t|

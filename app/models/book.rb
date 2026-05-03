@@ -26,7 +26,7 @@ class Book < ApplicationRecord
   has_many :book_sections, dependent: :destroy
   has_one_attached :image
   has_one_attached :pdf_file # file goc
-  has_one_attached :preview_pdf #file xem thu
+  has_one_attached :preview_pdf # file xem thu
 
   belongs_to :author
   belongs_to :publisher
@@ -43,9 +43,9 @@ class Book < ApplicationRecord
               maximum: MAX_TITLE_LENGTH
             }
 
-  validates :pdf_file, content_type: ['application/pdf'],
-                       size: { less_than: 50.megabytes, 
-                       message: 'phải nhỏ hơn 50MB' }
+  validates :pdf_file, content_type: ["application/pdf"],
+                       size: {less_than: 50.megabytes,
+                              message: "phải nhỏ hơn 50MB"}
 
   validates :description,
             length: {
@@ -158,4 +158,32 @@ class Book < ApplicationRecord
         .distinct
     end
   }
+  def to_rag_context
+    # Dùng variables để tránh truy vấn DB nhiều lần cho cùng một dữ liệu
+    author_name = author&.name || "Chưa rõ tác giả"
+    publisher_name = publisher&.name || "Chưa rõ nhà xuất bản"
+    category_list = categories.pluck(:name).join(", ")
+    category_list = "Chưa phân loại" if category_list.blank?
+
+    {
+      id:,
+      title:,
+      author: author_name,
+      publisher: publisher_name,
+      publication_year:,
+      categories: category_list,
+      description:,
+      total_quantity:,
+      available_quantity:,
+      borrow_count:,
+      average_rating: average_rating.to_f,
+      full_metadata_text: <<~TEXT.squish
+        Sách "#{title}" của tác giả #{author_name}, do nhà xuất bản #{publisher_name} phát hành năm #{publication_year}.#{' '}
+        Thể loại: #{category_list}.#{' '}
+        Mô tả: #{description}.#{' '}
+        Hiện có #{available_quantity}/#{total_quantity} cuốn sẵn sàng cho mượn.#{' '}
+        Đã có #{borrow_count} lượt mượn và điểm đánh giá trung bình là #{average_rating}/5.
+      TEXT
+    }
+  end
 end

@@ -1,20 +1,5 @@
 # encoding: utf-8
 
-# attach_image = ->(book) do
-#   cover_path = Rails.root.join("lib", "assets", "book_covers", "book_#{book.id}.jpg")
-
-#   if File.exist?(cover_path)
-#     book.image.attach(
-#       io: File.open(cover_path),
-#       filename: "book_#{book.id}.jpg",
-#       content_type: 'image/jpeg'
-#     )
-#     puts "✅ Đã thêm ảnh bìa cho sách #{book.id}: #{book.title}"
-#   else
-#     puts "⚠️  Chưa có ảnh bìa cho sách #{book.id}: #{book.title} (đường dẫn: #{cover_path})"
-#   end
-# end
-
 puts "🌱 Đang tạo dữ liệu mẫu cho hệ thống thư viện..."
 
 puts "🧹 Đang xóa dữ liệu cũ..."
@@ -105,7 +90,8 @@ authors = [
   { name: "Tô Hoài", nationality: "Việt Nam", birth_date: "1920-09-27", death_date: "2014-07-06" },
   { name: "Nam Cao", nationality: "Việt Nam", birth_date: "1917-10-29", death_date: "1951-11-30" },
   { name: "George Orwell", nationality: "Anh", birth_date: "1903-06-25", death_date: "1950-01-21" },
-  { name: "Ernest Hemingway", nationality: "Mỹ", birth_date: "1899-07-21", death_date: "1961-07-02" }
+  { name: "Ernest Hemingway", nationality: "Mỹ", birth_date: "1899-07-21", death_date: "1961-07-02" },
+  { name: "Vũ Trọng Phụng", nationality: "Việt Nam", birth_date: "1912-10-29", death_date: "1939-12-13" }
 ].map { |a| Author.create!(a) }
 
 puts "🏢 Đang tạo nhà xuất bản..."
@@ -195,7 +181,7 @@ books = [
     title: "Số đỏ",
     description: "Tiểu thuyết trào phúng về xã hội Việt Nam đầu thế kỷ 20",
     publication_year: 1936,
-    author: authors[7],
+    author: authors[10],
     publisher: publishers[5],
     categories: [categories[0]],
     total_quantity: 10,
@@ -434,9 +420,6 @@ books = [
   )
 
   book_data[:categories].each { |cat| book.categories << cat }
-
-  # Attach cover image
-  attach_image.call(book)
   book
 end
 

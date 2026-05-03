@@ -19,8 +19,6 @@ gem "rails", "~> 7.0.5"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
-gem "neighbor" # A fast, efficient, and flexible neighbor search library
-gem "pg" # Use postgresql as the database for Active Record
 # Use mysql as the database for Active Record
 # gem "mysql2", "~> 0.5"
 
@@ -113,3 +111,5 @@ gem "whenever", require: false
 
 gem "pdf-reader", "~> 2.15"
 gem "combine_pdf"
+gem "neighbor" # A fast, efficient, and flexible neighbor search library
+gem "pg" # Use postgresql as the database for Active Record

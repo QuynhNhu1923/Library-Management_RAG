@@ -1,8 +1,13 @@
 <!-- Sidebar -->
 <div class="sidebar d-flex flex-column">
-  <h3 class="fw-bold text-primary sidebar-title">
-    My <span class="text-danger">Book</span><br />
-    <span class="text-danger shelf-text">Shelf</span>
+  <h3 class="fw-bold sidebar-title" style="line-height: 1.2;">
+    <span style="background: linear-gradient(45deg, #ff00cc, #3333ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+      The Book
+    </span>
+    <br />
+    <span style="background: linear-gradient(45deg, #3333ff, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 0.9em;">
+      Oasis
+    </span>
   </h3>
 
   <% if user_signed_in? && current_user%>
@@ -85,3 +90,26 @@
     <li><%= link_to t("languages.vi"), request.params.merge(locale: :vi)%></li>
   </ul>
 </div>
+<script>
+  (function() {
+    function updateClock() {
+      const h = document.getElementById('current-hour');
+      const d = document.getElementById('current-date');
+      if (!h || !d) return;
+
+      const now = new Date();
+      h.textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      d.textContent = now.toLocaleDateString('en-GB');
+    }
+
+    // Chạy ngay lập tức
+    updateClock();
+    
+    // Hỗ trợ Rails Turbo: Chạy lại khi chuyển trang
+    document.addEventListener("turbo:load", updateClock);
+    document.addEventListener("DOMContentLoaded", updateClock);
+    
+    // Cập nhật mỗi phút
+    setInterval(updateClock, 60000);
+  })();
+</script>

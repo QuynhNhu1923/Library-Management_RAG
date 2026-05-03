@@ -11,3 +11,4 @@ window.hideModal = hideModal
 import "chartkick"
 import "Chart.bundle"
 import "bootstrap"
+import "chatbot"
