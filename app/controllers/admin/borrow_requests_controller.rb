@@ -22,7 +22,7 @@ class Admin::BorrowRequestsController < Admin::ApplicationController
     @q = BorrowRequest.includes(:user).ransack(params[:q])
 
     @pagy, @borrow_requests = pagy(
-      @q.result(distinct: true).sorted
+      @q.result.order(created_at: :desc)
     )
   end
 

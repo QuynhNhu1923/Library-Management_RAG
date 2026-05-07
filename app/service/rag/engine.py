@@ -26,7 +26,7 @@ class RAGEngine:
         self.llm = ChatGoogleGenerativeAI(
             model=Config.LLM_MODEL, 
             google_api_key=Config.GOOGLE_API_KEY, 
-            temperature=0.2 # Giảm xuống 0.2 để trả lời chính xác hơn, ít "sáng tạo" quá mức
+            temperature=0.1 # 0.1 để trả lời chính xác hơn, ít "sáng tạo" quá mức
         )
         
         self.retriever = self._setup_hybrid_retriever()
@@ -50,31 +50,38 @@ class RAGEngine:
         )
 
     def _setup_qa_chain(self):
-        # NÂNG CẤP PROMPT: Yêu cầu LLM đọc kỹ Metadata
-        template = """Bạn là Thủ thư AI chuyên nghiệp của hệ thống quản lý thư viện.
-Sử dụng NGỮ CẢNH (bao gồm nội dung sách và thông tin quản lý) dưới đây để trả lời câu hỏi.
+        # 1. ĐỊNH NGHĨA KHUÔN MẪU CHO TỪNG ĐOẠN VĂN BẢN (DOCUMENT PROMPT)
+        # Đây là bước quan trọng nhất để AI thấy được Metadata
+        document_template = """[Sách: {title}] | [TG: {author}]
+Nội dung: {page_content}"""
+        
+        doc_prompt = PromptTemplate(
+            template=document_template,
+            input_variables=["page_content", "title", "author"]
+        )
 
-QUY TẮC TRẢ LỜI:
-1. Nếu câu hỏi về tình trạng sách (còn hay hết, mượn bao nhiêu), hãy nhìn vào phần 'Thông tin quản lý' trong ngữ cảnh.
-2. Nếu câu hỏi về nội dung kiến thức, hãy tổng hợp từ 'Nội dung trích dẫn'.
-3. Luôn ưu tiên sự chính xác. Nếu không có thông tin trong ngữ cảnh, hãy nói "Xin lỗi, thư viện hiện không có dữ liệu về vấn đề này".
-4. Phản hồi bằng tiếng Việt, lịch sự và thân thiện.
+        # 2. PROMPT TỔNG THỂ CHO HỆ THỐNG
+        template = """Bạn là một thủ thư thông minh. Dưới đây là các đoạn trích từ thư viện.
+Nhiệm vụ của bạn là liệt kê TẤT CẢ các tác phẩm của tác giả được hỏi dựa vào NGỮ CẢNH cung cấp.
 
-NGỮ CẢNH TRA CỨU:
+QUY TẮC:
+- Liệt kê đầy đủ tên sách và tác giả nếu tìm thấy trong ngữ cảnh.
+- Chỉ sử dụng thông tin trong phần NGỮ CẢNH.
+- Nếu không thấy thông tin liên quan đến tác giả đó, hãy trả lời "Thư viện hiện chưa có dữ liệu về tác giả này".
+
+NGỮ CẢNH:
 {context}
 
-CÂU HỎI CỦA NGƯỜI DÙNG: {question}
+CÂU HỎI: {question}
 
-TRẢ LỜI CHI TIẾT:"""
+TRẢ LỜI:"""
 
         prompt = PromptTemplate(
             template=template, 
             input_variables=["context", "question"]
         )
         
-        # SỬA LỖI TẠI ĐÂY: Sử dụng định dạng linh hoạt hơn
-        # Thay vì ép buộc full_info và rating, ta dùng page_content mặc định
-        # và xử lý metadata thủ công bên trong chuỗi RetrievalQA
+        # 3. KẾT NỐI VÀO CHAIN
         return RetrievalQA.from_chain_type(
             llm=self.llm,
             chain_type="stuff",
@@ -83,11 +90,9 @@ TRẢ LỜI CHI TIẾT:"""
             chain_type_kwargs={
                 "prompt": prompt,
                 "document_variable_name": "context",
-                # Chúng ta sử dụng định dạng mặc định để tránh lỗi Missing Metadata
-                # LLM sẽ nhận context là danh sách các page_content (đã được ingestor gắn metadata vào text)
+                "document_prompt": doc_prompt, # Dùng template đã định nghĩa ở trên
             }
         )
-
     def ask(self, query: str):
         # Trả về kết quả từ chuỗi QA
         return self.qa_chain.invoke({"query": query})

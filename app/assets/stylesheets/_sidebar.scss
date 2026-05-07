@@ -7,7 +7,9 @@
   width: 185px;
   height: 100vh;
 
-  background-color: #fef9f9;
+  /* background-color: #fef9f9; */
+  /* background: linear-gradient(180deg, #1f1c2c, #928dab); */
+  background: linear-gradient(180deg, #1e293b, #334155);
   border-right: 1px solid #ddd;
   border-radius: 10px 0 0 10px;
   padding: 0;
@@ -35,11 +37,12 @@
     padding: 15px 20px;
 
     border-radius: 5px;
-    color: #333;
+    color: white;
     text-decoration: none;
+    font-size: 16px;
 
     &:hover {
-      background-color: #f0f0f0;
+      background-color: #5488c9;
       text-decoration: none;
     }
   }
@@ -51,7 +54,8 @@
   }
 
   .admin-layout .sidebar {
-    background-color: #fff4e6; /* cam nhạt */
+    background-color: #fff4e6;
+    /* cam nhạt */
   }
 }
 

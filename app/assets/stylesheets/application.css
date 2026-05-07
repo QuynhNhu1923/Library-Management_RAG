@@ -28,8 +28,13 @@
   border-radius: 10px;
 }
 
-.user-msg { text-align: right; }
-.bot-msg { text-align: left; }
+.user-msg {
+  text-align: right;
+}
+
+.bot-msg {
+  text-align: left;
+}
 
 .user-msg span {
   background-color: #0d6efd;
@@ -43,4 +48,8 @@
   border-radius: 15px 15px 15px 0;
   display: inline-block;
   border: 1px solid #dee2e6;
+}
+
+body {
+  background: linear-gradient(180deg, #f8fafc, #e2e8f0b7);
 }

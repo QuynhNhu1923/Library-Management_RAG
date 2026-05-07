@@ -28,22 +28,9 @@
 <% end %>
 
 <!-- Borrow Requests Table -->
-<table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th><%= t(".seq") %></th>
-      <th><%= t(".request_date") %></th>
-      <th><%= t(".start_date") %></th>
-      <th><%= t(".end_date") %></th>
-      <th><%= t(".status") %></th>
-      <th><%= t(".actions") %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render partial: "borrow_request_row", 
-               collection: @borrow_requests.each_with_index.map { |req, idx| [req, @pagy.offset + idx + Settings.digits.digit_1] },
-               as: :req_with_index %>
-  </tbody>
-</table>
+<%= render "borrow_list/table",
+           borrow_requests: @borrow_requests,
+           offset: @pagy.offset %>
 
+<!-- Pagination -->
 <%== pagy_bootstrap_nav(@pagy) %>

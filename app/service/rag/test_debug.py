@@ -2,17 +2,19 @@ import os
 import sys
 from pathlib import Path
 
-# Thêm thư mục gốc (Library-Management_RAG) vào hệ thống path của Python
+# --- PHẦN XỬ LÝ PATH ---
+# Thêm thư mục gốc vào hệ thống path của Python
 root_path = Path(__file__).resolve().parent.parent.parent.parent
-sys.path.append(str(root_path))
+if str(root_path) not in sys.path:
+    sys.path.append(str(root_path))
 
-# Bây giờ mới import các module của app
-from app.service.rag.engine import RAGEngine 
-from app.service.rag.config import Config
-
-# Định nghĩa các đường dẫn cơ sở nếu cần
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data" / "pdf"
+try:
+    from app.service.rag.engine import RAGEngine 
+    from app.service.rag.config import Config
+except ImportError as e:
+    print(f"❌ Lỗi Import: {e}")
+    print("Hãy đảm bảo bạn đang chạy file test từ đúng thư mục hoặc cấu trúc path chính xác.")
+    sys.exit(1)
 
 def debug_retrieval():
     # 1. Khởi tạo Engine
@@ -23,56 +25,68 @@ def debug_retrieval():
         print(f"❌ Lỗi khởi tạo Engine: {e}")
         return
 
+    # Kịch bản test: Kiểm tra tra cứu tác giả (Nhóm FIND_BOOK)
     question = "Nam Cao có những tác phẩm nào?"
-    print(f"\n--- ĐANG KIỂM TRA CÂU HỎI: '{question}' ---")
+    print(f"\n{'='*60}")
+    print(f"🚀 ĐANG KIỂM TRA CÂU HỎI: '{question}'")
+    print(f"{'='*60}")
 
-    # 2. Test bước TÌM KIẾM (Retrieval)
-    # Tăng k lên để quét rộng hơn trong không gian Vector
-    k_test = 10
-    search_results = engine.vector_db.similarity_search(question, k=k_test)
-    
-    print(f"\n[PHẦN 1] KẾT QUẢ TRUY XUẤT TỪ VECTOR DB (Tìm thấy {len(search_results)} đoạn):")
-    
-    found_lao_hac = False
-    for i, res in enumerate(search_results):
-        # Lấy metadata an toàn
-        metadata = res.metadata
-        title = metadata.get('book_title') or metadata.get('title') or 'Không rõ tên'
-        author = metadata.get('author') or 'Không rõ TG'
-        
-        # Kiểm tra nội dung text bên trong chunk
-        content_preview = res.page_content[:50].replace('\n', ' ')
-        
-        print(f"{i+1:2d}. [Sách: {title:15s}] | [TG: {author:10s}] | Nội dung: {content_preview}...")
-        
-        # Kiểm tra xem Lão Hạc có xuất hiện trong metadata hoặc nội dung không
-        if "Lão Hạc" in title or "Lão Hạc" in res.page_content:
-            found_lao_hac = True
-
-    print("-" * 50)
-    if found_lao_hac:
-        print("✅ KẾT LUẬN 1: Dữ liệu Lão Hạc CÓ tồn tại trong DB.")
-    else:
-        print("❌ KẾT LUẬN 1: Lão Hạc KHÔNG có trong kết quả tìm kiếm.")
-        print("   -> Gợi ý: Kiểm tra khâu 'ingest' hoặc xem file PDF có bị lỗi font không.")
-
-    # 3. Test bước TRẢ LỜI (Generation)
-    print("\n[PHẦN 2] AI ĐANG TẠO CÂU TRẢ LỜI (Dựa trên context đã tìm thấy)...")
+    # 2. Chạy hàm ask (Bao gồm cả Router + Retrieval + Generation)
     try:
         response = engine.ask(question)
-        answer = response.get('answer', '')
         
-        print(f"\nCâu trả lời của AI:\n{answer}")
-        print("-" * 50)
-        
-        if "Lão Hạc" in answer:
-            print("✅ KẾT LUẬN 2: AI đã nhận diện và liệt kê đúng Lão Hạc.")
+        # Lấy dữ liệu từ dictionary trả về
+        intent = response.get('intent', 'N/A')
+        answer = response.get('result', '') # Lưu ý: Engine mới dùng key 'result'
+        source_docs = response.get('source_documents', [])
+
+        print(f"\n[PHẦN 1] KIỂM TRA ROUTER:")
+        print(f"📍 Intent nhận diện: {intent}")
+        if intent == "FIND_BOOK":
+            print("✅ Router hoạt động đúng.")
         else:
-            print("❌ KẾT LUẬN 2: AI bỏ sót Lão Hạc trong câu trả lời.")
-            if found_lao_hac:
-                print("   -> Lỗi: Context có nhưng AI không chọn lọc được. Hãy kiểm tra lại Prompt.")
+            print(f"⚠️ Router nhận diện chưa chuẩn (Kỳ vọng: FIND_BOOK, Thực tế: {intent})")
+
+        print(f"\n[PHẦN 2] KẾT QUẢ TRUY XUẤT (Tìm thấy {len(source_docs)} đoạn):")
+        
+        found_target = False
+        target_book = "Lão Hạc" # Sách mục tiêu để kiểm chứng
+
+        for i, doc in enumerate(source_docs):
+            meta = doc.metadata
+            # Lấy metadata theo cấu trúc trong prompts.py
+            title = meta.get('title') or meta.get('book_title') or 'Không rõ tên'
+            author = meta.get('author') or 'Không rõ TG'
+            location = meta.get('location') or 'Không rõ vị trí'
+            
+            content_preview = doc.page_content[:60].replace('\n', ' ')
+            
+            print(f"{i+1:2d}. [Sách: {title[:20]:20s}] | [TG: {author:12s}] | [Vị trí: {location:10s}]")
+            print(f"    📄 Nội dung: {content_preview}...")
+            
+            if target_book.lower() in title.lower() or target_book.lower() in doc.page_content.lower():
+                found_target = True
+
+        print("-" * 50)
+        if found_target:
+            print(f"✅ KẾT LUẬN TRUY XUẤT: Dữ liệu '{target_book}' CÓ xuất hiện trong Context.")
+        else:
+            print(f"❌ KẾT LUẬN TRUY XUẤT: Không tìm thấy '{target_book}' trong các đoạn trích.")
+
+        print(f"\n[PHẦN 3] CÂU TRẢ LỜI CỦA AI:")
+        print(f"-----------------------------------------------------------")
+        print(answer)
+        print(f"-----------------------------------------------------------")
+        
+        if target_book.lower() in answer.lower():
+            print(f"✅ KẾT LUẬN CUỐI: AI đã liệt kê đúng '{target_book}'.")
+        else:
+            print(f"❌ KẾT LUẬN CUỐI: AI bỏ sót thông tin quan trọng.")
+
     except Exception as e:
-        print(f"❌ Lỗi khi AI tạo câu trả lời: {e}")
+        print(f"❌ Lỗi trong quá trình xử lý: {e}")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == "__main__":
     debug_retrieval()

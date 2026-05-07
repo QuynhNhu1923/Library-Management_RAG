@@ -20,7 +20,7 @@ digits:
 
 pagy:
   items: 10
-  books: 20
+  books: 12
 
 email:
   from_address: "noreply@example.com"

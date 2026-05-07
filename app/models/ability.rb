@@ -24,7 +24,7 @@ class Ability
     # Users can read books, authors, and their own profile
     can :read, [Book, Author]
     can :read, %i(favorites follows)
-    can :read, [BorrowRequest, User], id: user.id
+    can :read, BorrowRequest, user_id: user.id
 
     # Users can update their own profile
     can :update, User, id: user.id

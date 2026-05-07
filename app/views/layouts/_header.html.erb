@@ -1,6 +1,6 @@
 <!-- Sidebar -->
 <div class="sidebar d-flex flex-column">
-  <h3 class="fw-bold sidebar-title" style="line-height: 1.2;">
+  <h3 class="fw-bold sidebar-title text-center" style="line-height: 1.2;">
     <span style="background: linear-gradient(45deg, #ff00cc, #3333ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
       The Book
     </span>
@@ -24,26 +24,26 @@
     <% else %>
       <nav class="nav flex-column">
         <div class="nav-item"><%= link_to "🏠 #{t("sidebar.home")}", root_path, class: "nav-link #{"active" if current_page?(root_path)}" %></div>
-        <div class="nav-item"><%= link_to "🔍 #{t("sidebar.search")}", search_books_path, class: "nav-link" %></div>
-        <div class="nav-item"><%= link_to "⭐ #{t("sidebar.favorite")}", favorites_user_path(current_user), class: "nav-link" %></div>
-        <div class="nav-item"><%= link_to "👤 #{t("sidebar.follow")}", follows_user_path(current_user), class: "nav-link" %></div>
+        <div class="nav-item"><%= link_to "🔍 #{t("sidebar.search")}", search_books_path, class: "nav-link #{"active" if current_page?(search_books_path)}" %></div>
+        <div class="nav-item"><%= link_to "⭐ #{t("sidebar.favorite")}", favorites_user_path(current_user), class: "nav-link #{"active" if current_page?(favorites_user_path(current_user))}" %></div>
+        <%# <div class="nav-item"><%= link_to "👤 #{t("sidebar.follow")}", follows_user_path(current_user), class: "nav-link" %>
         <div class="nav-item"><%= link_to "📚 #{t("sidebar.borrow_list")}", borrow_request_index_path, class: "nav-link #{'active' if current_page?(borrow_request_index_path)}" %></div>
       </nav>
     <% end %>
   <% else %>
     <nav class="nav flex-column">
       <div class="nav-item"><%= link_to "🏠 #{t("sidebar.home")}", root_path, class: "nav-link #{"active" if current_page?(root_path)}" %></div>
-      <div class="nav-item"><%= link_to "🔍 #{t("sidebar.search")}", search_books_path, class: "nav-link" %></div>
+      <div class="nav-item"><%= link_to "🔍 #{t("sidebar.search")}", search_books_path, class: "nav-link #{"active" if current_page?(search_books_path)}" %></div>
     </nav>
   <% end %>
 </div>
 
 <!-- Topbar -->
-<div class="topbar d-flex align-items-center justify-content-between px-6 py-2 bg-light shadow-sm">
+<div class="topbar d-flex align-items-center justify-content-between px-4 py-2 bg-white shadow-sm border-bottom" style="height: 60px;">
   <% if user_signed_in? && current_user %>
     <div class="left-content">
-      <span class="fw-bold fs-5">
-        <%= gravatar_for current_user, size: 30 if current_user %>
+      <span class="fw-bold fs-5 d-flex align-items-center gap-2">
+        <%= gravatar_for current_user, size: 40 if current_user %>
         <%= current_user&.name %>
       </span>
     </div>
@@ -57,7 +57,7 @@
 
       <!-- Dropdown ⚙️ -->
       <div class="dropdown">
-        <button class="btn text-dark fs-4 dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn text-dark fs-2 dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           ⚙️
         </button>
         <ul class="dropdown-menu">

@@ -4,8 +4,31 @@
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
   }
 
+  .form-control-lg,
+  .form-select-lg {
+    height: 50px;
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+    border-radius: 18px;
+  }
+
+  input[type="date"].form-control-lg {
+    line-height: 1.5;
+  }
+
+  .form-label {
+    min-height: 28px;
+  }
+
+  .custom-input {
+    height: 35px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-size: 1.25rem;
+  }
+
   .form-label.fw-semibold {
-    color: #495057;
+    color: #49574c;
     margin-bottom: 0.5rem;
   }
 

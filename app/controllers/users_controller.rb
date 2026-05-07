@@ -10,7 +10,12 @@ blob).freeze
   PUBLISHER_ID = "publisher_id".freeze
 
   # GET /users/:id
-  def show; end
+  def show
+    @pagy, @borrow_requests = pagy(
+      @user.borrow_requests.order(created_at: :desc),
+      items: 10
+    )
+  end
 
   # GET /users/:id/edit
   def edit

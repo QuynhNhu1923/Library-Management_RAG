@@ -46,3 +46,6 @@ config/environments/*.local.yml
 
 venv/
 __pycache__/
+lib/assets/import_pdfs_cut/*
+lib/assets/import_pdfs/*    
+lib/assets/book_covers/*    

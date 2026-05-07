@@ -5,12 +5,11 @@ class StaticPagesController < ApplicationController
     #                                        items: Settings.digits.digit_14)
     @pagy_books, @recommended_books = pagy(
       Book.recommended
-          .with_attached_image 
-          .includes(:author), 
-      items: Settings.digits.digit_14
+          .with_attached_image
+          .includes(:author),
+      items: Settings.digits.digit_10
     )
   end
-  
 
   def help; end
 end
