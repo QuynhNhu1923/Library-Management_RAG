@@ -3,6 +3,12 @@ import os
 from pathlib import Path
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+app.mount("/assets", StaticFiles(directory="/home/quynhnhu/Projects/Library-Management_RAG/app/assets"), name="assets")
+
 # 1. Xử lý đường dẫn hệ thống để đảm bảo tìm thấy các file module
 current_dir = Path(__file__).resolve().parent # Thư mục chứa main.py (app/service/rag)
 if str(current_dir) not in sys.path:

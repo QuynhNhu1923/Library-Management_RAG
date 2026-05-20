@@ -7,7 +7,7 @@
     width: 4px;
   }
   #chat-content::-webkit-scrollbar-thumb {
-    background: #cdcdcd;
+    background: #64748b; /* Đổi màu thanh cuộn cho hợp tone */
     border-radius: 10px;
   }
 
@@ -27,7 +27,7 @@
     margin-bottom: 0.3rem;
   }
   .markdown-body strong {
-    color: #0d6efd; 
+    color: #1e293b; 
   }
 
   /* Badge nguồn trích dẫn */
@@ -39,7 +39,7 @@
   }
   .bot-msg .badge:hover {
     background-color: #e2e6ea !important;
-    border-color: #0d6efd !important;
+    border-color: #334155 !important;
   }
 
   /* Container khung chat */
@@ -49,20 +49,49 @@
     bottom: 20px;
     right: 20px;
   }
+
+  /* Hiệu ứng nhún nhảy dễ thương cho Icon */
+  @keyframes cuteBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-4px) rotate(8deg); }
+  }
+
+  /* Đã đổi màu: Nút bấm mở chat theo phong cách màu mới của bạn */
+  #chat-circle {
+    width: 60px; 
+    height: 60px; 
+    background: linear-gradient(180deg, #1e293b, #334155); 
+    border: none; 
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 16px rgba(30, 41, 59, 0.4) !important;
+  }
+  #chat-circle:hover {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 8px 24px rgba(30, 41, 59, 0.6) !important;
+  }
+
+  /* CSS helper cho màu sắc mới */
+  .bg-custom-dark {
+    background: linear-gradient(180deg, #1e293b, #334155) !important;
+  }
+  .text-custom-dark {
+    color: #1e293b !important;
+  }
 </style>
 
 <div id="chatbot-container">
   <!-- Nút bấm mở Chat -->
-  <button id="chat-circle" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" onclick="toggleChat()" style="width: 60px; height: 60px;">
-    <i class="fas fa-robot fa-lg"></i>
+  <button id="chat-circle" class="btn text-white rounded-circle d-flex align-items-center justify-content-center" onclick="toggleChat()">
+    <i class="fas fa-brain cute-robot-icon" style="font-size: 26px; color: white; animation: cuteBounce 3s infinite ease-in-out;"></i>
   </button>
 
   <!-- Hộp chat -->
-  <div id="chat-box" class="card shadow-lg d-none" style="width: 360px; max-width: 90vw; height: 500px; max-height: calc(100vh - 120px); position: absolute; bottom: 80px; right: 0px; display: flex; flex-direction: column;">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+  <div id="chat-box" class="card shadow-lg d-none" style="width: 360px; max-width: 90vw; height: 500px; max-height: calc(100vh - 120px); position: absolute; bottom: 80px; right: 0px; display: flex; flex-direction: column; border: 1px solid rgba(30, 41, 59, 0.15);">
+    <!-- Đã đổi màu: Header hộp chat sang màu tối đồng bộ -->
+    <div class="card-header bg-custom-dark text-white d-flex justify-content-between align-items-center">
       <div>
         <h6 class="mb-0"><i class="fas fa-university me-2"></i>Thủ thư online</h6>
-        <small style="font-size: 0.7rem;" id="current-date-display"></small>
+        <small style="font-size: 0.7rem; color: #cbd5e1;" id="current-date-display"></small>
       </div>
       <button type="button" class="btn-close btn-close-white" onclick="toggleChat()"></button>
     </div>
@@ -70,15 +99,16 @@
     <div id="chat-content" class="card-body bg-light" style="flex: 1; overflow-y: auto; padding: 15px;">
       <div class="bot-msg mb-3">
         <div class="d-inline-block p-2 px-3 rounded-3 bg-white text-dark shadow-sm border" style="max-width: 90%;">
-          Xin chào! Mình là chatbot RAG, mình có thể giúp gì cho bạn về kho sách?
+          Xin chào! Mình là Thủ thư online, mình có thể giúp gì cho bạn về kho sách?
         </div>
       </div>
     </div>
 
     <div class="card-footer bg-white border-top p-2">
       <div class="input-group">
-        <input type="text" id="chat-input" class="form-control border-0" placeholder="Hỏi về sách, tác giả, số lượng..." onkeypress="handleKeyPress(event)">
-        <button class="btn btn-link text-primary" onclick="processChat()">
+        <input type="text" id="chat-input" class="form-control border-0" placeholder="Hỏi về sách, tác giả, nội quy..." onkeypress="handleKeyPress(event)">
+        <!-- Đã đổi màu: Nút gửi tin nhắn -->
+        <button class="btn btn-link text-custom-dark" onclick="processChat()">
           <i class="fas fa-paper-plane"></i>
         </button>
       </div>
@@ -86,13 +116,12 @@
   </div>
 </div>
 
-<!-- LOGIC JAVASCRIPT ĐÃ FIX LỖI -->
+<!-- LOGIC JAVASCRIPT -->
 <script>
   function toggleChat() {
     const chatBox = document.getElementById('chat-box');
     const dateDisplay = document.getElementById('current-date-display');
     
-    // Gán ngày tháng an toàn, không bị báo lỗi null
     if (dateDisplay) {
       dateDisplay.innerText = new Date().toLocaleDateString('vi-VN');
     }
@@ -125,7 +154,7 @@
 
     chatContent.innerHTML += `
       <div class="user-msg mb-3 text-end">
-        <div class="d-inline-block p-2 px-3 rounded-3 bg-primary text-white shadow-sm" style="max-width: 90%; text-align: left;">
+        <div class="d-inline-block p-2 px-3 rounded-3 text-white shadow-sm" style="max-width: 90%; text-align: left; background-color: #1e293b;">
           ${message}
         </div>
       </div>
@@ -134,10 +163,11 @@
     scrollToBottom();
 
     const loadingId = 'loading-' + Date.now();
+    // Biểu tượng loading xoay tròn
     chatContent.innerHTML += `
       <div id="${loadingId}" class="bot-msg mb-3">
         <div class="d-inline-block p-2 px-3 rounded-3 bg-white text-dark shadow-sm border" style="max-width: 90%;">
-          <span class="spinner-border spinner-border-sm text-primary me-1" role="status"></span> 
+          <span class="spinner-border spinner-border-sm text-custom-dark me-1" role="status"></span> 
           <i>Thủ thư đang tìm kiếm...</i>
         </div>
       </div>
@@ -165,10 +195,11 @@
         if (data.sources && data.sources.length > 0) {
           sourcesHtml = '<div class="mt-3 border-top pt-2"><small class="text-muted d-block mb-2"><i class="fas fa-link me-1"></i>Nguồn tham khảo:</small>';
           data.sources.forEach(src => {
+            // Icon cuốn sách nhỏ trong phần nguồn trích dẫn
             sourcesHtml += `
               <span class="badge bg-light text-dark border border-secondary me-1 mb-1 shadow-sm" 
                     title="${src.author} | Trang: ${src.page}" style="cursor: help;">
-                <i class="fas fa-book fa-xs text-primary"></i> ${src.book_title}
+                <i class="fas fa-book fa-xs text-custom-dark"></i> ${src.book_title}
               </span>
             `;
           });
@@ -199,7 +230,7 @@
       chatContent.innerHTML += `
         <div class="bot-msg mb-3">
           <div class="d-inline-block p-2 px-3 rounded-3 bg-danger text-white shadow-sm border" style="max-width: 90%;">
-            <i class="fas fa-wifi me-1"></i> Mất kết nối tới máy chủ RAG. Hãy đảm bảo API FastAPI đang chạy.
+            <i class="fas fa-wifi me-1"></i> Mất kết nối tới máy chủ.
           </div>
         </div>
       `;
