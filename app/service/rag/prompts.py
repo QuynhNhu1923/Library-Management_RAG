@@ -1,111 +1,49 @@
-import sys
-from pathlib import Path
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.retrievers import BM25Retriever
-from langchain.retrievers import EnsembleRetriever
-from langchain_core.documents import Document
+class RouterPrompts:
+    """Từ điển 1: Phân loại câu hỏi (Đầu não định tuyến)"""
+    SYSTEM_ROUTER = """
+    Bạn là bộ phân loại yêu cầu cho thư viện HUST. Hãy phân tích câu hỏi của người dùng và trả về 1 trong các nhãn sau:
 
-# --- PHẦN XỬ LÝ PATH ---
-current_dir = Path(__file__).resolve().parent
-if str(current_dir) not in sys.path:
-    sys.path.append(str(current_dir))
+    - FIND_BOOK: Tìm danh sách sách, kiểm tra tác giả, vị trí sách trên kệ.
+    - BOOK_INFO: Hỏi về nội dung, ý nghĩa, tóm tắt hoặc đánh giá sách.
+    - POLICY: Hỏi về quy định mượn/trả, giờ mở cửa, thẻ thư viện.
+    - CHAT: Chào hỏi hoặc nói chuyện không liên quan đến dữ liệu thư viện.
 
-try:
-    from config import Config
-    # Import tất cả từ prompts.py
-    from prompts import ROUTER_TEMPLATE, PROMPT_LIBRARY, DOC_PROMPT
-except ImportError:
-    from app.service.rag.config import Config
-    from app.service.rag.prompts import ROUTER_TEMPLATE, PROMPT_LIBRARY, DOC_PROMPT
+    Chỉ trả ra duy nhất tên nhãn (Ví dụ: FIND_BOOK), nghiêm cấm giải thích hoặc thêm dấu câu.
+    """
 
-class RAGEngine:
-    def __init__(self):
-        self.embeddings = HuggingFaceEmbeddings(model_name=Config.EMBEDDING_MODEL)
-        self.vector_db = Chroma(persist_directory=Config.VECTOR_DB_PATH, embedding_function=self.embeddings)
-        self.llm = ChatGoogleGenerativeAI(
-            model=Config.LLM_MODEL, 
-            google_api_key=Config.GOOGLE_API_KEY, 
-            temperature=0.1
-        )
-        
-        self.retriever = self._setup_hybrid_retriever()
 
-    def _setup_hybrid_retriever(self):
-        """Khởi tạo Hybrid Retriever (Vector + BM25)"""
-        vector_retriever = self.vector_db.as_retriever(search_kwargs={"k": Config.K_VECTOR})
-        
-        # Xây dựng BM25 từ toàn bộ tài liệu trong Vector DB
-        all_docs = self.vector_db.get()
-        documents = [
-            Document(page_content=text, metadata=meta) 
-            for text, meta in zip(all_docs['documents'], all_docs['metadatas'])
-        ]
-        bm25_retriever = BM25Retriever.from_documents(documents)
-        bm25_retriever.k = Config.K_BM25
+class ExecutionPrompts:
+    """Từ điển 2, 3, 4: Hệ thống Prompt xử lý theo ngữ cảnh RAG"""
+    
+    # 2. Từ điển Tra cứu (Search/Metadata Prompt)
+    FIND_BOOK = """
+    Bạn là một thủ thư tra cứu chính xác. Dựa trên NGỮ CẢNH cung cấp, hãy liệt kê danh sách các tác phẩm.
+    Yêu cầu:
+    1. Trình bày dạng danh sách có đánh số.
+    2. Mỗi dòng gồm định dạng: [Tên sách] - [Tác giả].
+    3. Nếu tìm thấy vị trí kệ (location) trong phần nguồn/metadata, hãy ghi chú ngay bên cạnh.
+    4. Tuyệt đối không bình luận, tóm tắt hoặc phân tích thêm về nội dung sách trừ khi được yêu cầu.
+    """
 
-        return EnsembleRetriever(
-            retrievers=[bm25_retriever, vector_retriever],
-            weights=[Config.ALPHA, 1 - Config.ALPHA]
-        )
+    # 3. Từ điển Giải đáp nội dung (Deep QA Prompt)
+    BOOK_INFO = """
+    Bạn là một chuyên gia phê bình văn học. Hãy sử dụng các đoạn trích trong NGỮ CẢNH để giải thích chi tiết vấn đề người dùng hỏi.
+    Yêu cầu:
+    1. Câu trả lời phải mạch lạc, giàu tính phân tích và bám sát nội dung trích dẫn.
+    2. Nếu có nhiều luồng ý kiến hoặc thông tin nằm rải rác ở các đoạn trích khác nhau, hãy tổng hợp lại một cách logic.
+    3. Phải trích dẫn rõ ràng tên tác phẩm hoặc tên chương khi đưa ra thông tin phân tích.
+    """
 
-    def _get_intent(self, query):
-        """Router: Phân loại ý định sử dụng template từ prompts.py"""
-        formatted_router = ROUTER_TEMPLATE.format(query=query)
-        response = self.llm.invoke(formatted_router)
-        intent = response.content.strip().upper()
-        
-        # Nếu LLM trả ra nhãn lạ, mặc định về CHAT
-        return intent if intent in PROMPT_LIBRARY else "CHAT"
+    # 4. Từ điển Quy định & Thủ tục (Policy Prompt)
+    POLICY = """
+    Bạn là trợ lý hành chính của thư viện HUST. Hãy dựa vào NGỮ CẢNH để trả lời câu hỏi.
+    Yêu cầu TỐI QUAN TRỌNG:
+    1. CHỈ trả lời ĐÚNG, NGẮN GỌN và TRỰC TIẾP vào trọng tâm câu hỏi. 
+    2. TUYỆT ĐỐI KHÔNG liệt kê thêm các quy trình, số tiền phạt hay thông tin không được hỏi.
+    3. Phớt lờ toàn bộ các thông tin rác (tên tiểu thuyết, sách văn học) nếu chúng vô tình lọt vào ngữ cảnh, chỉ tập trung vào văn bản nội quy.
+    """
 
-    def ask(self, query: str):
-        # 1. Nhận diện mục đích (Routing)
-        intent = self._get_intent(query)
-        print(f"🔍 [Router] Phát hiện Intent: {intent}")
-
-        # 2. Xử lý nhóm CHAT (Không cần Retrieval để tiết kiệm tài nguyên)
-        if intent == "CHAT":
-            prompt_template = PROMPT_LIBRARY["CHAT"]
-            final_prompt = prompt_template.format(question=query)
-            ans = self.llm.invoke(final_prompt)
-            return {"result": ans.content, "source_documents": [], "intent": intent}
-
-        # 3. Truy xuất dữ liệu từ Vector DB
-        # Nếu tìm sách, có thể ưu tiên tăng k (số lượng kết quả)
-        if intent == "FIND_BOOK":
-            self.retriever.retrievers[0].k = 10 # Tăng độ phủ cho BM25
-        
-        docs = self.retriever.invoke(query)
-
-        # 4. Format context sử dụng DOC_PROMPT từ prompts.py
-        context_parts = []
-        for doc in docs:
-            # metadata.get đảm bảo không lỗi nếu thiếu trường thông tin
-            formatted_doc = DOC_PROMPT.format(
-                page_content=doc.page_content,
-                title=doc.metadata.get("title", "Không rõ"),
-                author=doc.metadata.get("author", "Không rõ"),
-                location=doc.metadata.get("location", "Liên hệ thủ thư")
-            )
-            context_parts.append(formatted_doc)
-        
-        context_text = "\n\n---\n\n".join(context_parts)
-
-        # 5. Lấy Prompt Template tương ứng từ Library
-        selected_prompt_template = PROMPT_LIBRARY[intent]
-        
-        # Kết hợp thành Prompt cuối cùng
-        final_prompt = selected_prompt_template.format(
-            context=context_text, 
-            question=query
-        )
-        
-        # 6. Gọi LLM tạo câu trả lời
-        response = self.llm.invoke(final_prompt)
-
-        return {
-            "result": response.content,
-            "source_documents": docs,
-            "intent": intent
-        }
+    # Dự phòng cho luồng hội thoại thông thường
+    CHAT = """
+    Bạn là trợ lý ảo thân thiện của thư viện. Hãy chào hỏi hoặc trò chuyện ngắn gọn vui vẻ với người dùng.
+    """

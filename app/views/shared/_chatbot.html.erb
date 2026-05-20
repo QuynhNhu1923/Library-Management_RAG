@@ -27,7 +27,7 @@
     margin-bottom: 0.3rem;
   }
   .markdown-body strong {
-    color: #0d6efd; /* Màu xanh in đậm cho chuyên nghiệp */
+    color: #0d6efd; 
   }
 
   /* Badge nguồn trích dẫn */
@@ -58,7 +58,7 @@
   </button>
 
   <!-- Hộp chat -->
-  <div id="chat-box" class="card shadow-lg d-none" style="width: 380px; height: 500px; position: absolute; bottom: 80px; right: 0px;">
+  <div id="chat-box" class="card shadow-lg d-none" style="width: 360px; max-width: 90vw; height: 500px; max-height: calc(100vh - 120px); position: absolute; bottom: 80px; right: 0px; display: flex; flex-direction: column;">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
       <div>
         <h6 class="mb-0"><i class="fas fa-university me-2"></i>Thủ thư online</h6>
@@ -67,7 +67,7 @@
       <button type="button" class="btn-close btn-close-white" onclick="toggleChat()"></button>
     </div>
     
-    <div id="chat-content" class="card-body overflow-auto bg-light" style="height: 350px; padding: 15px;">
+    <div id="chat-content" class="card-body bg-light" style="flex: 1; overflow-y: auto; padding: 15px;">
       <div class="bot-msg mb-3">
         <div class="d-inline-block p-2 px-3 rounded-3 bg-white text-dark shadow-sm border" style="max-width: 90%;">
           Xin chào! Mình là chatbot RAG, mình có thể giúp gì cho bạn về kho sách?
@@ -85,3 +85,125 @@
     </div>
   </div>
 </div>
+
+<!-- LOGIC JAVASCRIPT ĐÃ FIX LỖI -->
+<script>
+  function toggleChat() {
+    const chatBox = document.getElementById('chat-box');
+    const dateDisplay = document.getElementById('current-date-display');
+    
+    // Gán ngày tháng an toàn, không bị báo lỗi null
+    if (dateDisplay) {
+      dateDisplay.innerText = new Date().toLocaleDateString('vi-VN');
+    }
+    
+    if (chatBox) {
+      chatBox.classList.toggle('d-none');
+    }
+  }
+
+  function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      processChat();
+    }
+  }
+
+  function scrollToBottom() {
+    const chatContent = document.getElementById('chat-content');
+    if (chatContent) {
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
+  }
+
+  async function processChat() {
+    const inputEl = document.getElementById('chat-input');
+    const message = inputEl.value.trim();
+    if (!message) return;
+
+    const chatContent = document.getElementById('chat-content');
+    if (!chatContent) return;
+
+    chatContent.innerHTML += `
+      <div class="user-msg mb-3 text-end">
+        <div class="d-inline-block p-2 px-3 rounded-3 bg-primary text-white shadow-sm" style="max-width: 90%; text-align: left;">
+          ${message}
+        </div>
+      </div>
+    `;
+    inputEl.value = '';
+    scrollToBottom();
+
+    const loadingId = 'loading-' + Date.now();
+    chatContent.innerHTML += `
+      <div id="${loadingId}" class="bot-msg mb-3">
+        <div class="d-inline-block p-2 px-3 rounded-3 bg-white text-dark shadow-sm border" style="max-width: 90%;">
+          <span class="spinner-border spinner-border-sm text-primary me-1" role="status"></span> 
+          <i>Thủ thư đang tìm kiếm...</i>
+        </div>
+      </div>
+    `;
+    scrollToBottom();
+
+    try {
+      const formData = new FormData();
+      formData.append('question', message);
+
+      const response = await fetch('http://127.0.0.1:8000/ask', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      const loadingEl = document.getElementById(loadingId);
+      if (loadingEl) loadingEl.remove();
+
+      if (data.status === 'success') {
+        const parsedAnswer = marked.parse(data.answer);
+
+        let sourcesHtml = '';
+        if (data.sources && data.sources.length > 0) {
+          sourcesHtml = '<div class="mt-3 border-top pt-2"><small class="text-muted d-block mb-2"><i class="fas fa-link me-1"></i>Nguồn tham khảo:</small>';
+          data.sources.forEach(src => {
+            sourcesHtml += `
+              <span class="badge bg-light text-dark border border-secondary me-1 mb-1 shadow-sm" 
+                    title="${src.author} | Trang: ${src.page}" style="cursor: help;">
+                <i class="fas fa-book fa-xs text-primary"></i> ${src.book_title}
+              </span>
+            `;
+          });
+          sourcesHtml += '</div>';
+        }
+
+        chatContent.innerHTML += `
+          <div class="bot-msg mb-3">
+            <div class="d-inline-block p-3 rounded-3 bg-white text-dark shadow-sm border markdown-body" style="max-width: 90%;">
+              ${parsedAnswer}
+              ${sourcesHtml}
+            </div>
+          </div>
+        `;
+      } else {
+        chatContent.innerHTML += `
+          <div class="bot-msg mb-3">
+            <div class="d-inline-block p-2 px-3 rounded-3 bg-danger text-white shadow-sm border" style="max-width: 90%;">
+              <i class="fas fa-exclamation-triangle me-1"></i> ${data.answer}
+            </div>
+          </div>
+        `;
+      }
+    } catch (error) {
+      const loadingEl = document.getElementById(loadingId);
+      if (loadingEl) loadingEl.remove();
+      
+      chatContent.innerHTML += `
+        <div class="bot-msg mb-3">
+          <div class="d-inline-block p-2 px-3 rounded-3 bg-danger text-white shadow-sm border" style="max-width: 90%;">
+            <i class="fas fa-wifi me-1"></i> Mất kết nối tới máy chủ RAG. Hãy đảm bảo API FastAPI đang chạy.
+          </div>
+        </div>
+      `;
+    }
+    scrollToBottom();
+  }
+</script>

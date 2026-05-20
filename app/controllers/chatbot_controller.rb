@@ -7,7 +7,7 @@ class ChatbotController < ApplicationController
 
     # Kiểm tra query trống ngay từ đầu để đỡ tốn tài nguyên gọi AI
     if user_query.blank?
-      return render json: {answer: "Như ơi, câu hỏi đang trống nè!"},
+      return render json: {answer: "Câu hỏi đang trống!"},
                     status: :bad_request
     end
 
@@ -32,11 +32,11 @@ class ChatbotController < ApplicationController
           sources: result.fetch("sources", [])
         }
       else
-        render json: {answer: "Hệ thống AI đang bận (Lỗi #{response.code}), Như đợi chút nhé!"},
+        render json: {answer: "Hệ thống AI đang bận (Lỗi #{response.code}), Bạn đợi chút nhé!"},
                status: :service_unavailable
       end
     rescue Net::ReadTimeout
-      render json: {answer: "AI xử lý hơi lâu, Như thử lại câu hỏi ngắn hơn nhé!"},
+      render json: {answer: "AI xử lý hơi lâu, Bạn thử lại câu hỏi ngắn hơn nhé!"},
              status: :request_timeout
     rescue StandardError => e
       # Log lỗi ra terminal để dễ debug khi làm đồ án

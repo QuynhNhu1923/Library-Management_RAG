@@ -4,7 +4,6 @@ bo-gia.pdf
 canh-dong-bat-tan.pdf
 chi-pheo.pdf
 chien-tranh-va-hoa-binh.pdf
-cho-toi-xin-mot-ve-di-tuoi-tho.pdf
 clean-code.pdf
 dac-nhan-tam.pdf
 de-men-phieu-luu-ky.pdf
@@ -177,3 +176,5 @@ vui-ve-khong-quau-nha.pdf
 xa-hoi-viet-nam-tu-the-ky-xvii.pdf
 xay-dung-bo-may-lanh-dao-de-truong-ton.pdf
 xu-ngap-vat.pdf
+so-tay-huong-dan-va-noi-quy-thu-vien.pdf
+cho-toi-xin-mot-ve-di-tuoi-tho.pdf
