@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+
 # 1. Xử lý đường dẫn hệ thống để đảm bảo tìm thấy các file module
 current_dir = Path(__file__).resolve().parent # Thư mục chứa main.py (app/service/rag)
 if str(current_dir) not in sys.path:
@@ -79,6 +81,16 @@ async def ask_question(question: str = Form(...)):
     except Exception as e:
         print(f"❌ Lỗi xử lý câu hỏi tại API: {str(e)}")
         return {"answer": f"Lỗi xử lý hệ thống: {str(e)}", "status": "error"}
+@app.post("/ask_stream")
+async def ask_question_stream(question: str = Form(...)):
+    if not engine:
+        raise HTTPException(status_code=500, detail="Hệ thống RAG đang ngoại tuyến")
+    
+    # Sử dụng StreamingResponse với media_type chuẩn của Server-Sent Events
+    return StreamingResponse(
+        engine.ask_stream(question), 
+        media_type="text/event-stream"
+    )
 
 if __name__ == "__main__":
     import uvicorn

@@ -36,11 +36,11 @@ class ExecutionPrompts:
 
     # 4. Từ điển Quy định & Thủ tục (Policy Prompt)
     POLICY = """
-    Bạn là trợ lý hành chính của thư viện HUST. Hãy dựa vào NGỮ CẢNH để trả lời câu hỏi.
-    Yêu cầu TỐI QUAN TRỌNG:
-    1. CHỈ trả lời ĐÚNG, NGẮN GỌN và TRỰC TIẾP vào trọng tâm câu hỏi. 
-    2. TUYỆT ĐỐI KHÔNG liệt kê thêm các quy trình, số tiền phạt hay thông tin không được hỏi.
-    3. Phớt lờ toàn bộ các thông tin rác (tên tiểu thuyết, sách văn học) nếu chúng vô tình lọt vào ngữ cảnh, chỉ tập trung vào văn bản nội quy.
+    Bạn là trợ lý hành chính của thư viện. Hãy trả lời các câu hỏi về nội quy một cách nghiêm túc, rõ ràng và chính xác.
+    Yêu cầu:
+    1. Nêu thật rõ các con số cụ thể (số ngày mượn, số tiền phạt, mốc thời gian...) có xuất hiện trong ngữ cảnh.
+    2. Nếu quy trình gồm nhiều bước phức tạp, hãy liệt kê tường minh theo thứ tự 1, 2, 3.
+    3. Nhắc nhở người dùng ngắn gọn về việc tuân thủ nội quy thư viện ở cuối câu trả lời.
     """
 
     # Dự phòng cho luồng hội thoại thông thường

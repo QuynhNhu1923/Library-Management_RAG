@@ -55,16 +55,47 @@
         <div class="fs-6" id="current-date">--/--/----</div>
       </div>
 
+      <!-- Dropdown Help xử lý bằng Stimulus -->
+      <div class="dropdown" data-controller="dropdown">
+        <button class="btn bg-light d-flex align-items-center gap-2 px-3 py-2 rounded border-0 dropdown-toggle no-arrow" 
+                type="button" 
+                id="helpDropdown" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+                data-action="click->dropdown#toggle">
+          
+          <!-- Icon Dấu hỏi chấm vòng tròn tinh tế như bạn cần -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 18px; height: 18px;" class="text-secondary">
+            <!-- Vòng tròn bên ngoài -->
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.084 1.085l-.284.284a.75.75 0 00-.218.53v.54m-.615 4.5h.008v.008h-.008V16.5zm-9-3.75a9 9 0 1118 0 9 9 0 01-18 0z" />
+          </svg>
+          <span class="text-secondary fw-semibold">Hỗ trợ</span>
+        </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="helpDropdown">
+          <li>
+            <button class="dropdown-item d-flex align-items-center gap-2 py-2" type="button" data-bs-toggle="modal" data-bs-target="#rulesModal">
+              📖 <span>Nội quy thư viện</span>
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item d-flex align-items-center gap-2 py-2" type="button" data-bs-toggle="modal" data-bs-target="#contactModal">
+              ✉️ <span>Liên hệ & Phản hồi</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
       <!-- Dropdown ⚙️ -->
       <div class="dropdown">
-        <button class="btn text-dark fs-2 dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn text-dark fs-2 dropdown-toggle p-0" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           ⚙️
         </button>
         <ul class="dropdown-menu">
-          <li><%= link_to t("topbar.profile"), current_user %></li>
-          <li><%= link_to t("topbar.settings"), edit_user_path(current_user) %></li>
+          <li><%= link_to t("topbar.profile"), current_user, class: "dropdown-item" %></li>
+          <li><%= link_to t("topbar.settings"), edit_user_path(current_user), class: "dropdown-item" %></li>
           <li><hr class="dropdown-divider"></li>
-          <li><%= link_to t("topbar.log_out"), destroy_user_session_path, data: { "turbo-method": :delete , method: :delete }%></li>
+          <li><%= link_to t("topbar.log_out"), destroy_user_session_path, data: { "turbo-method": :delete , method: :delete }, class: "dropdown-item" %></li>
         </ul>
       </div>
     </div>
@@ -73,13 +104,45 @@
       <span class="fw-bold fs-5">👤 <%= t("topbar.guest") %></span>
     </div>
 
-    <div class="right-buttons">
-      <%= link_to t("topbar.sign_in"), new_user_session_path, class: "btn btn-dark rounded-pill px-5 py-2 me-5 fs-6" %>
+    <div class="right-buttons d-flex align-items-center gap-3">
+      <!-- Dropdown Help xử lý bằng Stimulus -->
+      <div class="dropdown" data-controller="dropdown">
+        <button class="btn bg-light d-flex align-items-center gap-2 px-3 py-2 rounded border-0 dropdown-toggle no-arrow" 
+                type="button" 
+                id="helpDropdown" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+                data-action="click->dropdown#toggle">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 18px; height: 18px;" class="text-secondary">
+          <!-- Vòng tròn bên ngoài -->
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.084 1.085l-.284.284a.75.75 0 00-.218.53v.54m-.615 4.5h.008v.008h-.008V16.5zm-9-3.75a9 9 0 1118 0 9 9 0 01-18 0z" />
+        </svg>
+        <span class="text-secondary fw-semibold">Hỗ trợ</span>
+        </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="helpDropdown">
+          <li>
+            <button class="dropdown-item d-flex align-items-center gap-2 py-2" type="button" data-bs-toggle="modal" data-bs-target="#rulesModal">
+              📖 <span>Nội quy thư viện</span>
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item d-flex align-items-center gap-2 py-2" type="button" data-bs-toggle="modal" data-bs-target="#contactModal">
+              ✉️ <span>Liên hệ & Phản hồi</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <%= link_to t("topbar.sign_in"), new_user_session_path, class: "btn btn-dark rounded-pill px-5 py-2 fs-6" %>
       <%= link_to t("topbar.sign_up"), new_user_registration_path, class: "btn btn-dark rounded-pill px-5 py-2 fs-6" %>
     </div>
   <% end %>
 </div>
 
+<!-- Gọi partial chứa cấu trúc Modal Nội quy bằng PDF -->
+<%= render "shared/rules_modal" %>
 <!-- Language Switcher -->
 <div class="dropdown locale-switcher">
   <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="localeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,6 +153,7 @@
     <li><%= link_to t("languages.vi"), request.params.merge(locale: :vi)%></li>
   </ul>
 </div>
+
 <script>
   (function() {
     function updateClock() {

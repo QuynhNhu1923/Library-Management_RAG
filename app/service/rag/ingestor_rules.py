@@ -17,7 +17,7 @@ except ImportError:
 def ingest_rules():
     print("🚀 Bắt đầu quá trình Ingest Nội quy thư viện...")
 
-    # 1. Định nghĩa các khối nội dung chất lượng cao (Đã tối ưu cấu trúc cho AI đọc)
+    # 1. Định nghĩa các khối nội dung chất lượng cao
     rules_data = [
         {
             "section": "Thời gian hoạt động tại quầy",

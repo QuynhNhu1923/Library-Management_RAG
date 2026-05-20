@@ -1,0 +1,76 @@
+<!-- MODAL 1: NỘI QUY THƯ VIỆN  -->
+<div class="modal fade" id="rulesModal" tabindex="-1" aria-labelledby="rulesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content" style="height: 85vh;">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="rulesModalLabel">📜 Nội quy thư viện</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0" style="overflow: hidden;">
+        <iframe src="<%= library_rules_pdf_path %>" width="100%" height="100%" style="border: none;"></iframe>
+      </div>
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: THÔNG TIN LIÊN HỆ & PHẢN HỒI -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-bold" id="contactModalLabel">✉️ Liên hệ & Phản hồi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-4">Mọi thắc mắc, đóng góp ý kiến hoặc báo cáo sự cố về tài liệu, vui lòng liên hệ với ban quản lý thư viện qua các kênh sau:</p>
+        
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-start gap-3">
+            <span class="fs-4">📍</span>
+            <div>
+              <strong class="d-block">Địa chỉ thư viện:</strong>
+              <span class="text-secondary">Tầng 2, Tòa nhà Trung tâm Quản lý Thư viện</span>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-start gap-3">
+            <span class="fs-4">📞</span>
+            <div>
+              <strong class="d-block">Số điện thoại / Hotline:</strong>
+              <span class="text-secondary">(+84) 123 456 789</span>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-start gap-3">
+            <span class="fs-4">📧</span>
+            <div>
+              <strong class="d-block">Email hỗ trợ:</strong>
+              <a href="mailto:support.library@university.edu.vn" class="text-decoration-none">support.library@university.edu.vn</a>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-start gap-3">
+            <span class="fs-4">⏰</span>
+            <div>
+              <strong class="d-block">Giờ làm việc:</strong>
+              <span class="text-secondary">Thứ 2 - Thứ 7 (Sáng: 07:30 - 11:30 | Chiều: 13:00 - 17:00)</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4">
+        
+        <!-- Link mở form phản hồi nếu dự án của bạn có form khảo sát/góp ý bằng Google Form hoặc route riêng -->
+        <div class="text-center">
+          <a href="#" class="btn btn-dark rounded-pill px-4">Gửi form phản hồi trực tuyến</a>
+        </div>
+      </div>
+      <div class="modal-footer py-2 border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>

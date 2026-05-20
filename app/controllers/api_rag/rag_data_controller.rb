@@ -1,6 +1,6 @@
 class ApiRag::RagDataController < ActionController::API
   def metadata
-    # 1. Eager loading để tránh N+1 query (theo đúng cấu trúc Model của Như)
+    # 1. Eager loading để tránh N+1 query (theo đúng cấu trúc Model )
     books = Book.includes(:author, :categories, :publisher, :reviews).all
 
     # 2. Xử lý dữ liệu

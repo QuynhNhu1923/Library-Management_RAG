@@ -4,7 +4,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
 # --- CẤU HÌNH ĐƯỜNG DẪN ---
-# Như lưu ý đường dẫn này phải khớp hoàn toàn với ingestor.py
+# lưu ý đường dẫn này phải khớp hoàn toàn với ingestor.py
 VECTOR_DB_DIR = "/mnt/d/LibraryStorage/VectorData"
 
 def check_database():
@@ -37,12 +37,12 @@ def check_database():
         print(f"📊 Tổng số đoạn văn bản (chunks) đã lưu: {len(all_metadatas)}")
 
         # 6. Trích xuất danh sách các file PDF duy nhất
-        # Lưu ý: 'source' là key mà ingestor của Như dùng để lưu tên file
+        # Lưu ý: 'source' là key mà ingestordùng để lưu tên file
         sources = set()
         for meta in all_metadatas:
             if 'source' in meta:
                 sources.add(meta['source'])
-            elif 'source_title' in meta: # Dự phòng nếu Như dùng code cũ
+            elif 'source_title' in meta:
                 sources.add(meta['source_title'])
 
         # 7. Hiển thị kết quả

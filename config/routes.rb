@@ -36,7 +36,7 @@ Rails.application.routes.draw do
     get "/home",    to: "static_pages#home",    as: :home
     get "/help",    to: "static_pages#help",    as: :help
     get "/contact", to: "static_pages#contact", as: :contact
-
+    get "library_rules_pdf", to: "pages#view_rules_pdf", as: :library_rules_pdf
     # get "signup",   to: "users#new",            as: :signup
     # post "signup",  to: "users#create"
 
