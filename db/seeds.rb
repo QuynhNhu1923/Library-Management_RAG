@@ -472,7 +472,15 @@ books = [
   },
   {
     title: "Bố già",
-    description: "Tiểu thuyết về gia đình mafia Corleone.",
+    description: "Tiểu thuyết về gia đình mafia Corleone.
+     Câu chuyện xoay quanh Don Vito Corleone, 
+     ông trùm khét tiếng của gia đình mafia Corleone tại New York, 
+     và cuộc đấu tranh quyền lực đẫm máu với các gia đình đối thủ. 
+     Qua lăng kính của gia tộc Corleone, tác phẩm phơi bày mặt trái của quyền lực, 
+     tiền tài và thế giới ngầm, nơi danh dự và lòng trung thành được đổi bằng bạo lực 
+     và những quyết định sinh tử. Bố già không chỉ là một cuốn tiểu thuyết tội phạm mà 
+     còn là bức tranh phản ánh về cấu trúc gia đình, sự tha hóa của con người trước 
+     cám dỗ quyền lực và những bi kịch không thể tránh khỏi của một đế chế ngầm.",
     publication_year: 1969,
     author: Author.find_by!(name: "Mario Puzo"),
     publisher: publishers[2],
@@ -482,7 +490,13 @@ books = [
   },
   {
     title: "Những người khốn khổ",
-    description: "Kiệt tác văn học của Victor Hugo",
+    description: "Kiệt tác văn học của Victor Hugo. Câu chuyện xoay quanh Jean Valjean,
+     một người đàn ông bị kết án oan 19 năm tù giam chỉ vì ăn trộm một ổ bánh mì để nuôi 
+     gia đình. Sau khi được trả tự do, ông quyết tâm hoàn lương, nhưng xã hội lại không
+     ngừng truy đuổi quá khứ của ông thông qua thanh tra Javert. Trên hành trình đó,
+     ông gặp gỡ và bảo vệ Cosette, con gái của Fantine, một phụ nữ nghèo bị xã hội ruồng bỏ. 
+     Tác phẩm là bản hùng ca về lòng trắc ẩn, sự hy sinh và cuộc chiến không ngừng 
+     nghỉ giữa công lý và lòng nhân ái, giữa luật lệ hà khắc và tình người ấm áp.",
     publication_year: 1862,
     author: Author.find_by!(name: "Victor Hugo"),
     publisher: publishers[3],
@@ -652,7 +666,12 @@ books = [
   },
   {
     title: "Những di chúc bị phản bội",
-    description: "Phân tích các di chúc lịch sử bị phản bội trong lịch sử Việt Nam",
+    description: "Những Di Chúc Bị Phản Bội (Les Testaments trahis) của Milan 
+    Kundera là một tập tiểu luận giàu tính suy tư, nơi tác giả tiếp tục đào 
+    sâu những vấn đề ông từng đặt ra trong Nghệ thuật Tiểu Thuyết. Nếu cuốn sách
+    trước là hành trình truy nguyên lịch sử và bản chất của tiểu thuyết từ Miguel 
+    de Cervantes đến Franz Kafka, thì ở tác phẩm này, Kundera mở rộng phạm vi khảo sát,
+     đối thoại với nhiều tên tuổi lớn của văn chương và âm nhạc châu Âu.",
     publication_year: 2005,
     author: Author.find_by!(name: "Milan Kundera"),
     publisher: publishers[0],
@@ -662,7 +681,15 @@ books = [
   },
   {
     title: "Chiêu hồn thập loại chúng sinh",
-    description: "Tập truyện ngắn về số phận con người trong xã hội",
+    description: "Tác phẩm Chiêu Hồn Thập Loại Chúng Sinh (hay còn gọi là 
+    Văn tế thập loại chúng sinh) là một trong những áng văn chương đỉnh cao
+     của đại thi hào Nguyễn Du, thể hiện tinh thần nhân đạo bao la và sự thấ
+     u cảm sâu sắc đối với thân phận con người. Khác với những tác phẩm viết 
+     về giới thượng lưu hay các anh hùng, bài văn tế này hướng cái nhìn thương 
+     xót đến tất cả mọi tầng lớp trong xã hội, từ những kẻ quyền quý sa cơ đến 
+     những người cùng khổ, cô độc không nơi nương tựa. Qua ngòi bút tài hoa và 
+     đầy tâm huyết, tác giả đã dựng lên một bức tranh tâm linh huyền ảo nhưng 
+     cũng đầy tính hiện thực về kiếp nhân sinh phù du.",
     publication_year: 1998,
     author: Author.find_by!(name: "Nguyễn Du"),
     publisher: publishers[0],
@@ -2533,6 +2560,7 @@ puts "📋 Đang tạo yêu cầu mượn sách..."
 
   begin
     borrow_request = BorrowRequest.create!(
+  
       user_id: user_id,
       request_date: request_date,
       status: status,

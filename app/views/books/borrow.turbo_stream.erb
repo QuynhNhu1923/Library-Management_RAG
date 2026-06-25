@@ -1,7 +1,12 @@
-<%= turbo_stream.append "borrow-flash-container", partial: "shared/flash", locals: { notice: t(".added_to_borrow_cart") } %>
+<%= turbo_stream.append "borrow-flash-container", partial: "shared/flash", locals: { notice: t(".borrow_success") } %>
 
 <%= turbo_stream.after "borrow-flash-container" do %>
   <script>
-    hideModal("#borrowModal");
+    const modalElement = document.getElementById("borrowModal");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+
+    if (modal) {
+      modal.hide();
+    }
   </script>
 <% end %>

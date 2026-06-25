@@ -79,14 +79,11 @@ write_a_review destroy_review)
         "quantity" => quantity
       }
     end
-
+    flash.now[:notice] = t("books.borrow.borrow_success")
     respond_to do |format|
       format.turbo_stream
-      format.html do
-        redirect_to book_path(@book),
-                    notice: t("books.flash.added_to_borrow_cart")
-      end
     end
+    
   end
 
   # POST /books/:id/add_to_favorite

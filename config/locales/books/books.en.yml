@@ -103,7 +103,10 @@ en:
       favorite_success: "Book has been added to your favorites."
     remove_from_favorite:
       unfavorite_success: "Book has been removed from your favorites."
-
+    borrow:
+      borrow_success: "Book has been added to your borrow request."
+      borrow_failed: "Failed to add book to borrow request."
+      already_in_borrow_request: "This book is already in your borrow request."
   topbar:
     search_placeholder: "Search books..."
     search: "Search"
