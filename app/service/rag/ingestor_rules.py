@@ -1,10 +1,11 @@
 import sys
+import os
+import hashlib
 from pathlib import Path
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
-# Thêm path để import được file Config
 current_dir = Path(__file__).resolve().parent
 if str(current_dir) not in sys.path:
     sys.path.append(str(current_dir))
@@ -17,7 +18,6 @@ except ImportError:
 def ingest_rules():
     print("🚀 Bắt đầu quá trình Ingest Nội quy thư viện...")
 
-    # 1. Định nghĩa các khối nội dung chất lượng cao
     rules_data = [
         {
             "section": "Thời gian hoạt động tại quầy",
@@ -57,14 +57,13 @@ def ingest_rules():
         }
     ]
 
-    # 2. Khởi tạo kết nối tới Vector DB hiện tại của project
     embeddings = HuggingFaceEmbeddings(model_name=Config.EMBEDDING_MODEL)
     vector_db = Chroma(persist_directory=Config.VECTOR_DB_PATH, embedding_function=embeddings)
 
-    # 3. Đóng gói thành đối tượng Document của LangChain
     documents = []
-    for item in rules_data:
-        # Chuẩn hóa văn bản thô đưa vào Vector để khớp cấu trúc hiển thị của chuỗi QA
+    chunk_ids = []
+    
+    for i, item in enumerate(rules_data):
         formatted_content = f"[Tài liệu: Nội quy thư viện] | [Mục: {item['section']}]\nNội dung: {item['content']}"
         
         doc = Document(
@@ -77,10 +76,19 @@ def ingest_rules():
             }
         )
         documents.append(doc)
+        
+        # Băm ID theo tiêu đề section để Upsert chính xác
+        rule_hash = hashlib.md5(f"rule_{item['section']}".encode("utf-8")).hexdigest()
+        chunk_ids.append(rule_hash)
 
-    # 4. Lưu dữ liệu vào ChromaDB
-    vector_db.add_documents(documents)
-    print(f"✅ Đã tải thành công {len(documents)} phân đoạn Nội quy vào dữ liệu của hệ thống!")
+    vector_db.add_documents(documents=documents, ids=chunk_ids)
+    
+    # Xóa BM25 Cache để buộc hệ thống cập nhật chỉ mục tìm kiếm từ khóa
+    bm25_cache_path = os.path.join(Config.VECTOR_DB_PATH, "bm25_cache.pkl")
+    if os.path.exists(bm25_cache_path):
+        os.remove(bm25_cache_path)
+
+    print(f"✅ Đã Upsert thành công {len(documents)} phân đoạn Nội quy vào ChromaDB!")
 
 if __name__ == "__main__":
     ingest_rules()

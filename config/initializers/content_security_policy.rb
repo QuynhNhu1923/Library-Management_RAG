@@ -18,7 +18,8 @@ Rails.application.configure do
     policy.child_src   :self, :blob, :https
     
     # Cho phép kết nối đến localhost (ActionCable, Hotwire) và Gemini API sau này
-    policy.connect_src :self, :https, "http://localhost:3000", "ws://localhost:3000"
+    # policy.connect_src :self, :https, "http://localhost:3000", "ws://localhost:3000"
+    policy.connect_src :self, :https, "http://localhost:3000", "ws://localhost:3000", "http://127.0.0.1:8000", "http://localhost:8000"
   end
 
   # Vô hiệu hóa Nonce vì nó sẽ "vô hiệu hóa" unsafe_inline mà Như đang cần
