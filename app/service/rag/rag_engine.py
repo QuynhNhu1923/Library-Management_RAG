@@ -47,7 +47,7 @@ class RAGEngine:
         self.router_llm = ChatGoogleGenerativeAI(temperature=0.0, **llm_kwargs)
         
         self.hybrid_retriever = self._setup_hybrid_retriever()
-
+    
     def _setup_hybrid_retriever(self):
         k_vector_wide = Config.K_VECTOR 
         k_bm25_wide = Config.K_BM25

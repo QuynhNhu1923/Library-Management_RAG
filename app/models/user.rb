@@ -23,7 +23,7 @@ gender).freeze
   # - Trường password_digest để lưu hash # rubocop:disable Style/AsciiComments
   # - Phương thức authenticate(password) để xác thực # rubocop:disable Style/AsciiComments
 
-  enum role: {user: 0, admin: 1, super_admin: 2}
+  enum role: {user: 0, admin: 1}
   enum gender: {male: 0, female: 1, other: 2}
   enum status: {inactive: 0, active: 1}
 
