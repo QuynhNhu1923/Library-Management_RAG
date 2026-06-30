@@ -1,0 +1,108 @@
+/* Thanh cuộn cho khung chat */
+#chat-content::-webkit-scrollbar {
+  width: 4px;
+}
+#chat-content::-webkit-scrollbar-thumb {
+  background: #64748b; /* Đổi màu thanh cuộn cho hợp tone */
+  border-radius: 10px;
+}
+
+/* Định dạng tin nhắn của Bot (Markdown) */
+.markdown-body {
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+.markdown-body p {
+  margin-bottom: 0.8rem;
+}
+.markdown-body ul, .markdown-body ol {
+  padding-left: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+.markdown-body li {
+  margin-bottom: 0.3rem;
+}
+.markdown-body strong {
+  color: #1e293b; 
+}
+.markdown-body h1 {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.markdown-body h2 {
+  font-size: 1.1rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.markdown-body h3 {
+  font-size: 1rem;
+  margin-top: 0.7rem;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+.markdown-body h4, .markdown-body h5, .markdown-body h6 {
+  font-size: 0.95rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+.markdown-body blockquote {
+  margin: 0.5rem 0;
+  padding: 0.3rem 0.8rem;
+  color: #475569;
+  border-left: 3px solid #cbd5e1;
+  background-color: #f8fafc;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Badge nguồn trích dẫn */
+.bot-msg .badge {
+  transition: all 0.2s;
+  font-weight: 400;
+  white-space: normal;
+  text-align: left;
+}
+.bot-msg .badge:hover {
+  background-color: #e2e6ea !important;
+  border-color: #334155 !important;
+}
+
+/* Container khung chat */
+#chatbot-container {
+  z-index: 1050;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Hiệu ứng nhún nhảy dễ thương cho Icon */
+@keyframes cuteBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(8deg); }
+}
+
+/* Đã đổi màu: Nút bấm mở chat theo phong cách màu mới của bạn */
+#chat-circle {
+  width: 60px; 
+  height: 60px; 
+  background: linear-gradient(180deg, #1e293b, #334155); 
+  border: none; 
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(30, 41, 59, 0.4) !important;
+}
+#chat-circle:hover {
+  transform: scale(1.08) translateY(-3px);
+  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.6) !important;
+}
+
+/* CSS helper cho màu sắc mới */
+.bg-custom-dark {
+  background: linear-gradient(180deg, #1e293b, #334155) !important;
+}
+.text-custom-dark {
+  color: #1e293b !important;
+}

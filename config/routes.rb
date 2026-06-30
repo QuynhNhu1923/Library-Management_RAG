@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       resources :rag_data, only: [] do
         collection do
           get :metadata
+          get :search
         end
       end
     end

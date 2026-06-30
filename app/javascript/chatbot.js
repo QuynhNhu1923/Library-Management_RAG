@@ -1,5 +1,5 @@
 // Khởi tạo bộ nhớ hội thoại ngay khi load trang
-window.chatHistory = [];
+window.chatHistory = JSON.parse(localStorage.getItem('chatbot_history') || '[]');
 
 function toggleChat() {
   const chatBox = document.getElementById('chat-box');
@@ -29,6 +29,7 @@ async function processChat() {
   if (window.chatHistory.length > 6) {
     window.chatHistory = window.chatHistory.slice(-6);
   }
+  localStorage.setItem('chatbot_history', JSON.stringify(window.chatHistory));
 
   // 2. Hiển thị tin nhắn người dùng
   content.innerHTML += `
@@ -40,6 +41,7 @@ async function processChat() {
 
   input.value = '';
   scrollToBottom();
+  localStorage.setItem('chatbot_html', content.innerHTML);
 
   // 3. Khởi tạo Box trống cho Bot và hiệu ứng Loading
   const msgId = "msg-" + Date.now();
@@ -117,6 +119,8 @@ async function processChat() {
 
     // 6. Lưu câu trả lời hoàn chỉnh của Bot vào Trí nhớ sau khi kết thúc stream
     window.chatHistory.push({ role: 'assistant', content: fullBotResponse });
+    localStorage.setItem('chatbot_history', JSON.stringify(window.chatHistory));
+    localStorage.setItem('chatbot_html', content.innerHTML);
 
   } catch (error) {
     msgBox.innerHTML = `<span class="text-danger"><i class="fas fa-wifi me-1"></i> Không thể kết nối với Thư viện AI.</span>`;
@@ -134,12 +138,38 @@ function updateClock() {
   if (element) element.textContent = `${timeStr} - ${dateStr}`;
 }
 
+function clearChat() {
+  if (confirm("Bạn có muốn xóa toàn bộ lịch sử trò chuyện không?")) {
+    localStorage.removeItem('chatbot_history');
+    localStorage.removeItem('chatbot_html');
+    window.chatHistory = [];
+    const content = document.getElementById('chat-content');
+    if (content) {
+      content.innerHTML = `
+        <div class="bot-msg mb-3">
+          <div class="d-inline-block p-2 px-3 rounded-3 bg-white small text-dark shadow-sm border" style="max-width: 90%;">
+            Xin chào! Mình là Thủ thư online, mình có thể giúp gì cho bạn về kho sách?
+          </div>
+        </div>`;
+    }
+  }
+}
+
 document.addEventListener('turbo:load', () => {
   updateClock();
   setInterval(updateClock, 60000);
+
+  // Restore chat content from localStorage
+  const savedHtml = localStorage.getItem('chatbot_html');
+  const content = document.getElementById('chat-content');
+  if (savedHtml && content) {
+    content.innerHTML = savedHtml;
+    scrollToBottom();
+  }
 });
 
 // Gắn hàm vào Window để HTML gọi được
 window.toggleChat = toggleChat;
 window.handleKeyPress = handleKeyPress;
 window.processChat = processChat;
+window.clearChat = clearChat;

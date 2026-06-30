@@ -2,10 +2,11 @@ import os
 from pathlib import Path
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
+from config import Config
 
 # --- CẤU HÌNH ĐƯỜNG DẪN ---
 # lưu ý đường dẫn này phải khớp hoàn toàn với ingestor.py
-VECTOR_DB_DIR = "/mnt/d/LibraryStorage/VectorData"
+VECTOR_DB_DIR = Config.VECTOR_DB_PATH
 
 def check_database():
     print("\n--- 🔍 ĐANG KIỂM TRA DỮ LIỆU TRONG VECTOR DATABASE ---")
@@ -19,7 +20,7 @@ def check_database():
         # 2. Khởi tạo Local Embedding Model (phải giống hệt lúc nạp)
         print("⏳ Đang khởi tạo Embedding Model để đọc dữ liệu...")
         embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+            model_name=Config.EMBEDDING_MODEL
         )
         
         # 3. Kết nối tới ChromaDB

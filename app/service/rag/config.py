@@ -8,8 +8,8 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 class Config:
     
-    VECTOR_DB_PATH = "/mnt/d/LibraryStorage/VectorData"
-    EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    VECTOR_DB_PATH = "/home/quynhnhu/Projects/Library-Management_RAG/db/VectorData"
+    EMBEDDING_MODEL = "BAAI/bge-m3"
     LLM_MODEL = "gemini-2.5-flash"
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     COHERE_API_KEY = os.getenv("COHERE_API_KEY")

@@ -30,4 +30,33 @@ class ApiRag::RagDataController < ActionController::API
     render json: {status: "error", message: e.message},
            status: :internal_server_error
   end
+
+  def search
+    query = params[:query]
+    search_type = params[:type] || :all
+
+    if query.blank?
+      return render json: { status: "success", count: 0, data: [] }
+    end
+
+    books = Book.includes(:author, :categories, :publisher, :reviews).search(query, search_type)
+
+    data = books.map do |book|
+      filename = if book.pdf_file.attached?
+                   book.pdf_file.filename.to_s
+                 else
+                   "#{book.title.parameterize}.pdf"
+                 end
+      book.to_rag_context.merge(file_name: filename)
+    end
+
+    render json: {
+      status: "success",
+      count: data.size,
+      data: data
+    }
+  rescue StandardError => e
+    render json: { status: "error", message: e.message },
+           status: :internal_server_error
+  end
 end
