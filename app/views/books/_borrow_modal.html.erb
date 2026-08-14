@@ -16,8 +16,8 @@
         <div class="row">
           <!-- Left side: Image -->
           <div class="col-md-4 borrow-modal-left p-3 mb-2">
-            <% if @book.image.present? %>
-              <%= image_tag @book.image, alt: @book.title, class: "img-thumbnail mb-2 w-100" %>
+            <% if @book.image.attached? %>
+              <%= image_tag @book.image.variant(resize_to_limit: [250, 350]), alt: @book.title, class: "img-thumbnail mb-2 w-100" %>
             <% else %>
               <%= image_tag Settings.image.default_cover, alt: "No image", class: "img-thumbnail mb-2 w-100" %>
             <% end %>

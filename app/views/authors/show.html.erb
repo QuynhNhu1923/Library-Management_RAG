@@ -12,7 +12,7 @@
   <div class="row align-items-center px-3 py-4 m-2">
     <div class="col-md-2 text-center">
       <% if @author.image.attached? %>
-        <%= image_tag url_for(author.image), class: "rounded-circle author-avatar" %>
+        <%= image_tag @author.image.variant(resize_to_limit: [100, 100]), class: "rounded-circle author-avatar" %>
       <% else %>
         <%= image_tag Settings.images.default_author, class: "rounded-circle author-avatar" %>
       <% end %>

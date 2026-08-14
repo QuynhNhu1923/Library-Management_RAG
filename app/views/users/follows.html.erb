@@ -32,7 +32,7 @@
         <div class="card h-100 shadow-sm">
           <!-- Author Image -->
           <% if author.image.attached? %>
-            <%= image_tag url_for(author.image),
+            <%= image_tag author.image.variant(resize_to_limit: [250, 350]),
                 class: "card-img-top author-card-image",
                 alt: author.name %>
           <% else %>

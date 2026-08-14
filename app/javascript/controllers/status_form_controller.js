@@ -18,17 +18,16 @@ export default class extends Controller {
   toggleFields() {
     const status = this.statusSelectTarget.value
     console.log("statusSelect.value =", status)
-    console.log("tForm.borrowed =", this.tForm.status.borrowed)
 
     this.hideAll()
 
-    if (status === this.tForm.status.rejected) {
+    if (status === "rejected") {
       this.show(this.adminNoteFieldTarget)
-    } else if (status === this.tForm.status.returned ) {
+    } else if (status === "returned") {
       this.show(this.actualReturnDateFieldTarget)
-    } else if (status === this.tForm.status.borrowed) {
+    } else if (status === "borrowed") {
       this.show(this.actualBorrowDateFieldTarget)
-    } else if (status === this.tForm.status.approved) {
+    } else if (status === "approved") {
       this.show(this.approvedDateFieldTarget)
     }
   }
@@ -38,7 +37,7 @@ export default class extends Controller {
     const currentStatus = this.statusSelectTarget.dataset.currentStatus
 
     // Trường hợp rejected -> bắt buộc admin_note
-    if (status === this.tForm.status.rejected) {
+    if (status === "rejected") {
       const noteField = this.adminNoteFieldTarget.querySelector("textarea, input")
       if (!noteField || noteField.value.trim() === "") {
         this.showError(this.tForm.error.admin_note_required)
@@ -49,11 +48,11 @@ export default class extends Controller {
 
     // approved / borrowed / returned -> validate date
     let dateField
-    if (status === this.tForm.status.returned) {
+    if (status === "returned") {
       dateField = this.actualReturnDateFieldTarget.querySelector("input")
-    } else if (status === this.tForm.status.borrowed) {
+    } else if (status === "borrowed") {
       dateField = this.actualBorrowDateFieldTarget.querySelector("input")
-    } else if (status === this.tForm.status.approved) {
+    } else if (status === "approved") {
       dateField = this.approvedDateFieldTarget.querySelector("input")
     }
 

@@ -16,7 +16,7 @@
       <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
 
         <% if @book.image.attached? %>
-          <%= image_tag url_for(@book.image),
+          <%= image_tag @book.image.variant(resize_to_limit: [300, 400]),
               class: "img-fluid rounded book_detail-image" %>
         <% else %>
           <%= image_tag Setting.images.default_cover,
@@ -114,8 +114,8 @@
         <h4><strong><%= t(".about_author") %></strong></h4>
         <div class="row align-items-center px-3 py-4 m-2">
           <div class="col-md-2 text-center">
-          <% if @book.author&.image.attached? %>
-            <%= image_tag url_for(@book.author.image), class: "rounded-circle author-avatar" %>
+          <% if @book.author&.image&.attached? %>
+            <%= image_tag @book.author.image.variant(resize_to_limit: [100, 100]), class: "rounded-circle author-avatar" %>
           <% else %>
             <%= image_tag Settings.images.default_author, class: "rounded-circle author-avatar" %>
           <% end %>

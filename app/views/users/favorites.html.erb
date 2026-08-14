@@ -35,7 +35,7 @@
         <div class="card h-100 shadow-sm">
           <!-- Book Image -->
           <% if book.image.attached? %>
-            <%= image_tag book.image,
+            <%= image_tag book.image.variant(resize_to_limit: [250, 350]),
                 class: "card-img-top",
                 style: "height: 350px; object-fit: contain;",
                 alt: book.title %>

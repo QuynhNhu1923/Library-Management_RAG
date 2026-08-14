@@ -11,10 +11,12 @@ blob).freeze
 
   # GET /users/:id
   def show
-    @pagy, @borrow_requests = pagy(
-      @user.borrow_requests.order(created_at: :desc),
-      items: 10
-    )
+    if @user.user?
+      @pagy, @borrow_requests = pagy(
+        @user.borrow_requests.order(created_at: :desc),
+        items: 10
+      )
+    end
   end
 
   # GET /users/:id/edit

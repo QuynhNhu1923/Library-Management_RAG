@@ -1,6 +1,6 @@
 <tr id="cart-item-<%= item[:book].id %>" class="cart-item">
   <td class="cart-item-image">
-    <%= image_tag(item[:book].image.presence || Settings.image.default_cover,
+    <%= image_tag(item[:book].image.attached? ? item[:book].image.variant(resize_to_limit: [100, 100]) : Settings.image.default_cover,
                   alt: item[:book].title.presence || t(".no_image"),
                   class: "img-thumbnail") %>
   </td>
